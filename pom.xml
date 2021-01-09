@@ -31,10 +31,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.pulsar.ecosystem</groupId>
-  <artifactId>pulsar-io-template</artifactId>
-  <version>0.0.1</version>
-  <name>Pulsar Ecosystem :: IO Connector :: Template Project</name>
-  <description>It is a project template for developing an Apache Pulsar connector</description>
+  <artifactId>pulsar-io-sqs</artifactId>
+  <version>2.7.0</version>
+  <name>Pulsar Ecosystem :: IO Connector :: AWS SQS</name>
+  <description>It is an Apache Pulsar io connector for AWS SQS</description>
 
   <properties>
     <java.version>1.8</java.version>
@@ -47,7 +47,9 @@
     <!-- connector dependencies -->
     <jackson.version>2.9.7</jackson.version>
     <lombok.version>1.16.22</lombok.version>
-    <pulsar.version>2.2.0</pulsar.version>
+    <pulsar.version>2.7.0</pulsar.version>
+    <aws-java-sdk.version>1.11.106</aws-java-sdk.version>
+    <aws-sqs.version>1.0.8</aws-sqs.version>
 
     <!-- test dependencies -->
     <junit.version>4.12</junit.version>
@@ -95,6 +97,24 @@
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-annotations</artifactId>
         <version>${spotbugs-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.pulsar</groupId>
+        <artifactId>pulsar-io-aws</artifactId>
+        <version>${pulsar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-bom</artifactId>
+        <version>${aws-java-sdk.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>amazon-sqs-java-messaging-lib</artifactId>
+        <version>${aws-sqs.version}</version>
+        <type>jar</type>
       </dependency>
       <!-- test dependencies -->
       <dependency>
@@ -147,8 +167,23 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>pulsar-io-aws</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-sqs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>amazon-sqs-java-messaging-lib</artifactId>
     </dependency>
 
     <!-- test dependencies -->
