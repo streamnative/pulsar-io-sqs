@@ -85,8 +85,7 @@ public class SQSConnectorConfig implements Serializable {
             builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
                     this.getAwsEndpoint(),
                     this.getAwsRegion()));
-        }
-        if (!this.getAwsRegion().isEmpty()) {
+        } else if (!this.getAwsRegion().isEmpty()) {
             builder.setRegion(this.getAwsRegion());
         }
         builder.setCredentials(credPlugin.getCredentialProvider());

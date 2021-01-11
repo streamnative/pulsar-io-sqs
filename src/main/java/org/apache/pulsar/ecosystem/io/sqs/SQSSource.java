@@ -25,10 +25,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnection;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
+import com.amazonaws.util.StringUtils;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.jms.BytesMessage;
+import javax.jms.Destination;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
@@ -82,7 +85,16 @@ public class SQSSource extends AbstractAwsConnector implements Source<byte[]> {
 
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        consumer = session.createConsumer(session.createQueue(config.getQueueName()));
+        SQSUtils.ensureQueueExists(connection, config.getQueueName());
+        Destination destination;
+
+        if (!StringUtils.isNullOrEmpty(config.getQueueName())) {
+            SQSUtils.ensureQueueExists(connection, config.getQueueName());
+            destination = session.createQueue(config.getQueueName());
+        } else {
+            throw new Exception("destination is null.");
+        }
+        consumer = session.createConsumer(destination);
         consumer.setMessageListener(new MessageListenerImpl(this));
     }
 
