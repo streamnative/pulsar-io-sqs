@@ -17,6 +17,8 @@ jobs:
         env:
           SERVICES: sqs
           DEFAULT_REGION: us-east-1
+        ports:
+          - 4566:4566
 
     steps:
       - uses: actions/checkout@v1
@@ -26,4 +28,4 @@ jobs:
           java-version: 1.8
 
       - name: tests
-        run: mvn -Dtest=SQSSource test -DfailIfNoTests=false
+        run: mvn -Dtest=SQSSourceTest test -DfailIfNoTests=false
