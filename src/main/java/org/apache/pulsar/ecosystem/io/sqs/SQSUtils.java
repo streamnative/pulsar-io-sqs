@@ -18,26 +18,28 @@
  */
 package org.apache.pulsar.ecosystem.io.sqs;
 
-import com.amazon.sqs.javamessaging.AmazonSQSMessagingClientWrapper;
-import com.amazon.sqs.javamessaging.SQSConnection;
-
-import javax.jms.JMSException;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.GetQueueUrlRequest;
+import com.amazonaws.services.sqs.model.QueueDoesNotExistException;
 
 /**
  * SQSUtils defines utils for AWS SQS connector.
 */
 public class SQSUtils {
-    public static void ensureQueueExists(SQSConnection connection, String queueName) throws JMSException {
-        AmazonSQSMessagingClientWrapper client = connection.getWrappedAmazonSQSClient();
+    public static String ensureQueueExists(AmazonSQS client, String queueName) throws AmazonClientException {
+        String queueUrl = queueExists(client, queueName);
+        if (queueUrl == null) {
+            queueUrl = client.createQueue(queueName).getQueueUrl();
+        }
+        return queueUrl;
+    }
 
-        /*
-         * In most cases, you can do this with just a createQueue call, but GetQueueUrl
-         * (called by queueExists) is a faster operation for the common case where the queue
-         * already exists. Also many users and roles have permission to call GetQueueUrl
-         * but don't have permission to call CreateQueue.
-         */
-        if (!client.queueExists(queueName)) {
-            client.createQueue(queueName);
+    public static String queueExists(AmazonSQS client, String queueName) throws AmazonClientException {
+        try {
+            return client.getQueueUrl(new GetQueueUrlRequest(queueName)).getQueueUrl();
+        } catch (QueueDoesNotExistException e) {
+            return null;
         }
     }
 }

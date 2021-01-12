@@ -22,11 +22,14 @@ import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
  * Unit test {@link SQSSource}.
  */
+@Slf4j
 public class SQSSourceTest {
 
     /*

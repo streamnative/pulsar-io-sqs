@@ -19,8 +19,8 @@
 package org.apache.pulsar.ecosystem.io.sqs;
 
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
+import com.amazonaws.services.sqs.buffered.AmazonSQSBufferedAsyncClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.Serializable;
@@ -78,8 +78,8 @@ public class SQSConnectorConfig implements Serializable {
         return mapper.readValue(new ObjectMapper().writeValueAsString(map), SQSConnectorConfig.class);
     }
 
-    public AmazonSQS buildAmazonSQSClient(AwsCredentialProviderPlugin credPlugin) {
-        AmazonSQSClientBuilder builder =  AmazonSQSClientBuilder.standard();
+    public AmazonSQSBufferedAsyncClient buildAmazonSQSClient(AwsCredentialProviderPlugin credPlugin) {
+        AmazonSQSAsyncClientBuilder builder = AmazonSQSAsyncClientBuilder.standard();
 
         if (!this.getAwsEndpoint().isEmpty()) {
             builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
@@ -89,7 +89,7 @@ public class SQSConnectorConfig implements Serializable {
             builder.setRegion(this.getAwsRegion());
         }
         builder.setCredentials(credPlugin.getCredentialProvider());
-        return builder.build();
+        return new AmazonSQSBufferedAsyncClient(builder.build());
     }
 
 }

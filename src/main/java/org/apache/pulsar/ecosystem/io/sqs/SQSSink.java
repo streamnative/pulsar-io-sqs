@@ -19,90 +19,58 @@
 package org.apache.pulsar.ecosystem.io.sqs;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.amazon.sqs.javamessaging.ProviderConfiguration;
-import com.amazon.sqs.javamessaging.SQSConnection;
-import com.amazon.sqs.javamessaging.SQSConnectionFactory;
-import com.amazonaws.util.StringUtils;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import java.util.Map;
-import javax.jms.Destination;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.functions.api.Record;
-import org.apache.pulsar.io.aws.AbstractAwsConnector;
-import org.apache.pulsar.io.aws.AwsCredentialProviderPlugin;
 import org.apache.pulsar.io.core.Sink;
 import org.apache.pulsar.io.core.SinkContext;
-
 
 /**
  * A source connector for AWS SQS.
  */
 @Slf4j
-public class SQSSink extends AbstractAwsConnector implements Sink<byte[]> {
-    @Getter
-    private SQSConnectorConfig config;
+public class SQSSink extends SQSAbstractConnector implements Sink<byte[]> {
+    private SinkContext sinkContext;
 
-    private SQSConnection connection;
-    private Session session;
-    private MessageProducer producer;
+    public static final String METRICS_TOTAL_SUCCESS = "_sqs_sink_total_success_";
+    public static final String METRICS_TOTAL_FAILURE = "_sqs_sink_total_failure_";
 
     @Override
     public void open(Map<String, Object> map, SinkContext sinkContext) throws Exception {
-        if (config != null || connection != null) {
-            throw new IllegalStateException("Connector is already open");
-        }
-
-        config = SQSConnectorConfig.load(map);
-
-        AwsCredentialProviderPlugin credentialsProvider = createCredentialProvider(
-                config.getAwsCredentialPluginName(),
-                config.getAwsCredentialPluginParam());
-
-        SQSConnectionFactory connectionFactory = new SQSConnectionFactory(
-                new ProviderConfiguration(),
-                config.buildAmazonSQSClient(credentialsProvider)
-        );
-
-        connection = connectionFactory.createConnection();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination destination;
-
-        if (!StringUtils.isNullOrEmpty(config.getQueueName())) {
-            SQSUtils.ensureQueueExists(connection, config.getQueueName());
-            destination = session.createQueue(config.getQueueName());
-        } else {
-            throw new Exception("destination is null.");
-        }
-
-        producer = session.createProducer(destination);
+        this.sinkContext = sinkContext;
+        setConfig(SQSConnectorConfig.load(map));
+        prepareSqsClient();
     }
 
     @Override
     public void write(Record<byte[]> record) {
         try {
-            TextMessage message = session.createTextMessage(new String(record.getValue(), UTF_8));
-            producer.send(message);
+            send(new String(record.getValue(), UTF_8));
             record.ack();
+            if (sinkContext != null) {
+                sinkContext.recordMetric(METRICS_TOTAL_SUCCESS, 1);
+            }
         } catch (Exception e) {
-            log.error("failed send message to AWS SQS.");
+            log.error("failed send message to AWS SQS.", e);
             record.fail();
+            if (sinkContext != null) {
+                sinkContext.recordMetric(METRICS_TOTAL_FAILURE, 1);
+            }
         }
     }
 
+    public void send(String msgBody) {
+        final SendMessageRequest request = new SendMessageRequest();
+        request.withMessageBody(msgBody).withQueueUrl(getQueueUrl());
+        getClient().sendMessageAsync(request);
+    }
+
     @Override
-    public void close() throws Exception {
-        if (producer != null) {
-            producer.close();
-        }
-        if (session != null) {
-            session.close();
-        }
-        if (connection != null) {
-            connection.close();
+    public void close() {
+        if (getClient() != null) {
+            getClient().shutdown();
         }
     }
 }

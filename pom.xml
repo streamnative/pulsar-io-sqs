@@ -49,7 +49,6 @@
     <lombok.version>1.16.22</lombok.version>
     <pulsar.version>2.7.0</pulsar.version>
     <aws-java-sdk.version>1.11.106</aws-java-sdk.version>
-    <aws-sqs.version>1.0.8</aws-sqs.version>
 
     <!-- test dependencies -->
     <junit.version>4.12</junit.version>
@@ -109,12 +108,6 @@
         <version>${aws-java-sdk.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>amazon-sqs-java-messaging-lib</artifactId>
-        <version>${aws-sqs.version}</version>
-        <type>jar</type>
       </dependency>
       <!-- test dependencies -->
       <dependency>
@@ -179,11 +172,6 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-sqs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>amazon-sqs-java-messaging-lib</artifactId>
     </dependency>
 
     <!-- test dependencies -->
@@ -276,6 +264,7 @@
               <exclude>NOTICE</exclude>
               <exclude>.github/**/*.yml</exclude>
               <exclude>**/*.template</exclude>
+              <exclude>.ci/**</exclude>
             </excludes>
             <mapping>
               <proto>JAVADOC_STYLE</proto>
