@@ -34,8 +34,8 @@ import org.apache.pulsar.io.core.SinkContext;
 public class SQSSink extends SQSAbstractConnector implements Sink<byte[]> {
     private SinkContext sinkContext;
 
-    public static final String METRICS_TOTAL_SUCCESS = "_sqs_sink_total_success_";
-    public static final String METRICS_TOTAL_FAILURE = "_sqs_sink_total_failure_";
+    private static final String METRICS_TOTAL_SUCCESS = "_sqs_sink_total_success_";
+    private static final String METRICS_TOTAL_FAILURE = "_sqs_sink_total_failure_";
 
     @Override
     public void open(Map<String, Object> map, SinkContext sinkContext) throws Exception {
