@@ -33,7 +33,7 @@ public class SQSTestUtils {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("awsRegion", "us-east-1");
         properties.put("queueName", "test-queue-sink");
-        properties.put("awsEndpoint", "http://localstack:4566");
+        properties.put("awsEndpoint", "http://localhost:4566");
         properties.put("awsCredentialPluginParam", "{\"accessKey\":\"myKey\",\"secretKey\":\"my-Secret\"}");
         return properties;
     }

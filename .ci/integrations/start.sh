@@ -53,10 +53,10 @@ docker run  --network sqs-test -d --rm --name localstack \
             -e HOSTNAME_EXTERNAL=localstack \
             localstack/localstack:latest
 
-echo "-- Wait for localstack service to be ready"
-until $(curl --silent --fail http://localhost:4566/health | grep "\"sqs\": \"running\"" > /dev/null);  do sleep 1; done
-echo "-- localstack service ready to test"
 sudo echo "127.0.0.1 localstack" | sudo tee -a /etc/hosts
+echo "-- Wait for localstack service to be ready"
+until $(curl --silent --fail http://localstack:4566/health | grep "\"sqs\": \"running\"" > /dev/null);  do sleep 1; done
+echo "-- localstack service ready to test"
 
 docker ps
 
