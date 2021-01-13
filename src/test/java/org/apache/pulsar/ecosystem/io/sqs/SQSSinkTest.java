@@ -18,9 +18,9 @@
  */
 package org.apache.pulsar.ecosystem.io.sqs;
 
+import static org.apache.pulsar.ecosystem.io.sqs.SQSTestUtils.getTestConfigHashMap;
 import static org.junit.Assert.assertNull;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 
@@ -35,11 +35,7 @@ public class SQSSinkTest {
      */
     @Test
     public void testSQSSinkConnectToAWSSQS() {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("awsRegion", "us-east-1");
-        properties.put("queueName", "test-queue-sink");
-        properties.put("awsEndpoint", "http://localhost:4566");
-        properties.put("awsCredentialPluginParam", "{\"accessKey\":\"myKey\",\"secretKey\":\"my-Secret\"}");
+        Map<String, Object> properties = getTestConfigHashMap();
 
         SQSSink sink = new SQSSink();
         try {

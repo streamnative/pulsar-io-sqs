@@ -18,9 +18,9 @@
  */
 package org.apache.pulsar.ecosystem.io.sqs;
 
+import static org.apache.pulsar.ecosystem.io.sqs.SQSTestUtils.getTestConfigHashMap;
 import static org.junit.Assert.assertNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +38,7 @@ public class SQSSourceTest {
      */
     @Test
     public void testSQSSourceConnectToAWSSQS() {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("awsRegion", "us-east-1");
-        properties.put("queueName", "test-queue-source");
-        properties.put("awsEndpoint", "http://localhost:4566");
-        properties.put("awsCredentialPluginParam", "{\"accessKey\":\"myKey\",\"secretKey\":\"my-Secret\"}");
+        Map<String, Object> properties = getTestConfigHashMap();
 
         SQSSource source = new SQSSource();
         try {

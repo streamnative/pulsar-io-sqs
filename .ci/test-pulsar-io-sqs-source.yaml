@@ -22,7 +22,7 @@ configs:
   #
   # This field is optional.
   #
-  awsEndpoint: "https://dynamodb.us-west-2.amazonaws.com"
+  awsEndpoint: "http://localstack:4566"
 
   # Appropriate aws region. E.g. us-west-1, us-west-2
   #
@@ -34,7 +34,7 @@ configs:
   #
   # This field is *required*.
   #
-  queueName: "test-queue"
+  queueName: "test-queue-source"
 
   # Fully-Qualified class name of implementation of AwsCredentialProviderPlugin.
   # It is a factory class which creates an AWSCredentialsProvider that will be used by sqs client.

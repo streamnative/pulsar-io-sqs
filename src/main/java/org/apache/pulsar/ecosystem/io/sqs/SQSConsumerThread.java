@@ -41,7 +41,11 @@ public class SQSConsumerThread extends Thread {
 
     public void run() {
         while (true) {
-            source.receive().forEachOrdered(this::process);
+            try {
+                source.receive().forEachOrdered(this::process);
+            } catch (Exception ex) {
+                log.error("receive message from sqs error", ex);
+            }
         }
     }
 
