@@ -23,10 +23,9 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: prepare containers
-        run: ./.ci/integrations/start.sh
-
-      - name: tests
-        run: mvn -Dtest=*IntegrationTest test -DfailIfNoTests=false
+        run: |
+          ./.ci/integrations/start.sh
+          mvn -Dtest=*IntegrationTest test -DfailIfNoTests=false
 
       - name: cleanup
         run: ./.ci/integrations/stop.sh
