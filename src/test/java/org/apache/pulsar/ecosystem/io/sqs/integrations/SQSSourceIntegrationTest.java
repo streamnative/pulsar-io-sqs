@@ -104,7 +104,7 @@ public class SQSSourceIntegrationTest extends AbstractAwsConnector {
         for (int i = 0; i < 100; i++) {
             final SendMessageRequest request = new SendMessageRequest();
             request.withMessageBody(MSG + i).withQueueUrl(queueUrl);
-            client.sendMessageAsync(request);
+            client.sendMessage(request);
         }
     }
 

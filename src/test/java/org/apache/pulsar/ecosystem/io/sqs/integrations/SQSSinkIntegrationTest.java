@@ -120,7 +120,7 @@ public class SQSSinkIntegrationTest extends AbstractAwsConnector {
                 .create();
 
         for (int i = 0; i < 100; i++) {
-            pulsarProducer.newMessage().value(MSG + i).sendAsync();
+            pulsarProducer.newMessage().value(MSG + i).send();
         }
 
         pulsarProducer.close();
