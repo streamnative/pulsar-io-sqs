@@ -59,6 +59,8 @@ until curl http://localhost:4566/ > /dev/null 2>&1 ; do sleep 1; done
 echo "-- localstack service ready to test"
 sudo echo "127.0.0.1 localstack" | sudo tee -a /etc/hosts
 
+docker ps
+
 # run connector
 echo "-- run pulsar-io-sqs source connector"
 $PULSAR_ADMIN sources localrun -a /pulsar-io-sqs/target/pulsar-io-sqs-${MVN_VERSION}.nar \
