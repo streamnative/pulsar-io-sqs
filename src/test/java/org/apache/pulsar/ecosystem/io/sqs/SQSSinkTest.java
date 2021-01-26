@@ -16,7 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.pulsar.ecosystem.io.sqs;
+
+import static org.apache.pulsar.ecosystem.io.sqs.SQSTestUtils.getTestConfigHashMap;
+import static org.junit.Assert.assertNull;
+
+import java.util.Map;
+import org.junit.Test;
+
 /**
- * Classes for implementing a pulsar IO connector that generates randomized messages.
+ * Unit test {@link SQSSink}.
  */
-package org.apache.pulsar.ecosystem.io.random;
+public class SQSSinkTest {
+
+    /*
+     * Test Case: SQSSink should connect to AWS SQS with correct configs
+     *
+     */
+    @Test
+    public void testSQSSinkConnectToAWSSQS() {
+        Map<String, Object> properties = getTestConfigHashMap();
+
+        SQSSink sink = new SQSSink();
+        try {
+            sink.open(properties, null);
+        } catch (Exception e) {
+            assertNull("Connect to AWS SQS should not get exception", e);
+        }
+    }
+}
