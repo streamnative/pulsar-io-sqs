@@ -275,6 +275,7 @@
               <exclude>.github/**/*.yml</exclude>
               <exclude>**/*.template</exclude>
               <exclude>.ci/**</exclude>
+              <exclude>scripts/**</exclude>
             </excludes>
             <mapping>
               <proto>JAVADOC_STYLE</proto>
