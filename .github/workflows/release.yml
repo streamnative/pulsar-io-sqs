@@ -1,4 +1,4 @@
-name: amqpop Release
+name: sqs Release
 
 on:
   release:
