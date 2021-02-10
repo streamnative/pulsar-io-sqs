@@ -106,7 +106,7 @@ Before using the SQS sink connector, you need to create a configuration file thr
       awsRegion: "us-east-1"
       queueName: "test-queue"
       awsCredentialPluginName: ""
-      awsCredentialPluginParam: "'{"accessKey":"myKey","secretKey":"my-Secret"}'"
+      awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
     ```
 
 ## Usage

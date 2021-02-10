@@ -107,7 +107,7 @@ Before using the SQS source connector, you need to create a configuration file t
       awsRegion: "us-east-1"
       queueName: "test-queue"
       awsCredentialPluginName: ""
-      awsCredentialPluginParam: "'{"accessKey":"myKey","secretKey":"my-Secret"}'"
+      awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
     ```
 
 ## Usage
@@ -135,18 +135,18 @@ This section describes how to use the SQS source connector to receive messages f
     --source-config-file sqs-source-config.yaml
     ```
 
-5. Send a message to the SQS queue using the [AWS SQS CLI tool](https://aws.amazon.com/cli/). 
-
-   ```
-   aws sqs send-message --queue-url ${QUEUE_URL} --message-body "Hello From SQS"
-   ```
- 
-6. Consume the message from the Pulsar topic.
+5. Consume the message from the Pulsar topic.
 
     ```
     PULSAR_HOME/bin/pulsar-client consume -s "sub-products" public/default/test-queue-pulsar -n 0
     ```
 
+6. Send a message to the SQS queue using the [AWS SQS CLI tool](https://aws.amazon.com/cli/). 
+
+   ```
+   aws sqs send-message --queue-url ${QUEUE_URL} --message-body "Hello From SQS"
+   ```
+ 
     Now you can see the message "Hello From SQS" from the Pulsar consumer.
 
 
