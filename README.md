@@ -1,6 +1,18 @@
 # AWS SQS connector
 
-The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) connector is a [Pulsar IO connector](http://pulsar.apache.org/docs/en/next/io-overview/) for copying data between Amazon AWS SQS and Pulsar.
+The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) connector is a [Pulsar IO connector](http://pulsar.apache.org/docs/en/next/io-overview/) for copying data between Amazon AWS SQS and Pulsar. It contains two types of connectors: 
+
+- SQS **source** connector
+  
+  This connector feeds data from AWS SQS and writes data to Pulsar topics. 
+
+  ![](docs/sqs-source.png)
+
+- SQS **sink** connector  
+  
+  This connector pulls data from Pulsar topics and persists data to AWS SQS.
+
+  ![](docs/sqs-sink.png)
 
 Currently, SQS connector versions (`x.y.z`) are based on Pulsar versions (`x.y.z`).
 
