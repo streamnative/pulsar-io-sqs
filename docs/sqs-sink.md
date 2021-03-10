@@ -60,7 +60,7 @@ The configuration of the SQS source connector has the following properties.
 
 | Name | Type|Required | Default | Description
 |------|----------|----------|---------|-------------|
-| `awsEndpoint` |String| false | "tcp" | AWS SQS end-point URL. It can be found at [here](https://docs.aws.amazon.com/general/latest/gr/rande.html). |
+| `awsEndpoint` |String| false | " " (empty string) | AWS SQS end-point URL. It can be found at [here](https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region). |
 | `awsRegion` | String| true | " " (empty string) | Appropriate AWS region. For example, us-west-1, us-west-2. |
 | `awsCredentialPluginName` | String|false | " " (empty string) | Fully-qualified class name of implementation of `AwsCredentialProviderPlugin`. |
 | `awsCredentialPluginParam` | String|true | " " (empty string) | JSON parameter to initialize `AwsCredentialsProviderPlugin`. |
@@ -77,13 +77,15 @@ Before using the SQS sink connector, you need to create a configuration file thr
         "tenant": "public",
         "namespace": "default",
         "name": "sqs-source",
-        "topicName": "test-queue-pulsar",
+        "inputs": [
+          "test-queue-pulsar"
+        ],
         "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
         "parallelism": 1,
         "configs":
         {
-            "awsEndpoint": "https://dynamodb.us-west-2.amazonaws.com",
-            "awsRegion": "us-east-1",
+            "awsEndpoint": "https://sqs.us-west-2.amazonaws.com",
+            "awsRegion": "us-west-2",
             "queueName": "test-queue",
             "awsCredentialPluginName": "",
             "awsCredentialPluginParam": '{"accessKey":"myKey","secretKey":"my-Secret"}',
@@ -97,13 +99,14 @@ Before using the SQS sink connector, you need to create a configuration file thr
    tenant: "public"
    namespace: "default"
    name: "sqs-source"
-   topicName: "test-queue-pulsar"
+   inputs: 
+      - "test-queue-pulsar"
    archive: "connectors/pulsar-io-sqs-2.7.0.nar"
    parallelism: 1
 
    configs:
-      awsEndpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      awsRegion: "us-east-1"
+      awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+      awsRegion: "us-west-2"
       queueName: "test-queue"
       awsCredentialPluginName: ""
       awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'

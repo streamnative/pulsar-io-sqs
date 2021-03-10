@@ -18,17 +18,17 @@
 #
 
 configs:
-  # AWS SQS end-point url. It can be found at https://docs.aws.amazon.com/general/latest/gr/rande.html
+  # AWS SQS end-point url. It can be found at https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region
   #
   # This field is optional.
   #
-  awsEndpoint: "https://dynamodb.us-west-2.amazonaws.com"
+  awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
 
   # Appropriate aws region. E.g. us-west-1, us-west-2
   #
   # This field is *required*.
   #
-  awsRegion: "us-east-1"
+  awsRegion: "us-west-2"
 
   # The SQS queue name that messages should be read from or written to.
   #
