@@ -77,7 +77,9 @@ Before using the SQS sink connector, you need to create a configuration file thr
         "tenant": "public",
         "namespace": "default",
         "name": "sqs-source",
-        "topicName": "test-queue-pulsar",
+        "inputs": [
+          "test-queue-pulsar"
+        ],
         "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
         "parallelism": 1,
         "configs":
@@ -97,7 +99,8 @@ Before using the SQS sink connector, you need to create a configuration file thr
    tenant: "public"
    namespace: "default"
    name: "sqs-source"
-   topicName: "test-queue-pulsar"
+   inputs: 
+      - "test-queue-pulsar"
    archive: "connectors/pulsar-io-sqs-2.7.0.nar"
    parallelism: 1
 
