@@ -83,8 +83,8 @@ Before using the SQS source connector, you need to create a configuration file t
         "parallelism": 1,
         "configs":
         {
-            "awsEndpoint": "https://dynamodb.us-west-2.amazonaws.com",
-            "awsRegion": "us-east-1",
+            "awsEndpoint": "https://sqs.us-west-2.amazonaws.com",
+            "awsRegion": "us-west-2",
             "queueName": "test-queue",
             "awsCredentialPluginName": "",
             "awsCredentialPluginParam": '{"accessKey":"myKey","secretKey":"my-Secret"}',
@@ -103,8 +103,8 @@ Before using the SQS source connector, you need to create a configuration file t
    parallelism: 1
 
    configs:
-      awsEndpoint: "https://dynamodb.us-west-2.amazonaws.com"
-      awsRegion: "us-east-1"
+      awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+      awsRegion: "us-west-2"
       queueName: "test-queue"
       awsCredentialPluginName: ""
       awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
