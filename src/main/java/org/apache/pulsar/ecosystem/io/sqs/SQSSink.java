@@ -28,7 +28,7 @@ import org.apache.pulsar.io.core.Sink;
 import org.apache.pulsar.io.core.SinkContext;
 
 /**
- * A source connector for AWS SQS.
+ * A sink connector for AWS SQS.
  */
 @Slf4j
 public class SQSSink extends SQSAbstractConnector implements Sink<byte[]> {
