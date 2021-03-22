@@ -1,5 +1,5 @@
 ---
-description: The SQS sink connector pulls data from Pulsar topics and persists data to AWS SQS..
+description: The SQS sink connector pulls data from Pulsar topics and persists data to AWS SQS.
 author: ["StreamNative"]
 contributors: ["StreamNative"]
 language: Java
@@ -23,7 +23,7 @@ id: "sqs-sink"
 
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sink connector pulls data from Pulsar topics and persists data to AWS SQS.
 
-![](/images/connectors/sqs-sink.png)
+![](/docs/sqs-sink.png)
 
 # How to get 
 
