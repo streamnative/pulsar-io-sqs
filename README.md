@@ -18,7 +18,7 @@ Currently, SQS connector versions (`x.y.z`) are based on Pulsar versions (`x.y.z
 
 | SQS connector version | Pulsar version | Doc |
 | :---------- | :------------------- | :------------- |
-[2.7.0](https://github.com/streamnative/pulsar-io-sqs/releases/tag/v2.7.0)| [2.7.0](http://pulsar.apache.org/en/download/) | - [SQS source connector](https://hub.streamnative.io/connectors/sqs-source/2.7.0)<br>- [SQS sink connector](https://hub.streamnative.io/connectors/sqs-sink/2.7.0)
+[2.7.0](https://github.com/streamnative/pulsar-io-sqs/releases/tag/v2.7.0)| [2.7.0](http://pulsar.apache.org/en/download/) | - [SQS source connector](https://hub.streamnative.io/connectors/sqs-source/2.7.0)<br><br>- [SQS sink connector](https://hub.streamnative.io/connectors/sqs-sink/2.7.0)
 
 ## Project layout
 
