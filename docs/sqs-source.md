@@ -1,26 +1,3 @@
----
-description: The SQS source connector feeds data from AWS SQS and writes data to Pulsar topics.
-author: ["StreamNative"]
-contributors: ["StreamNative"]
-language: Java
-document: 
-source: "https://github.com/streamnative/pulsar-io-sqs/tree/branch-2.7.0/src/main/java/org/apache/pulsar/ecosystem/io/sqs"
-license: Apache License 2.0
-tags: ["Pulsar IO", "SQS", "Source"]
-alias: SQS Source
-features: ["Use SQS source connector to sync data to Pulsar"]
-license_link: "https://www.apache.org/licenses/LICENSE-2.0"
-icon: "/images/connectors/sqs-logo.png"
-download: "https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar"
-support: StreamNative
-support_link: https://streamnative.io
-support_img: "/images/connectors/streamnative.png"
-dockerfile: 
-owner_name: "StreamNative"
-owner_img: "/images/streamnative.png" 
-id: "sqs-source"
----
-
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) source connector feeds data from Amazon AWS SQS and writes data to Pulsar topics.
 
 ![](/docs/sqs-source.png)
@@ -29,7 +6,7 @@ The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sourc
 
 You can get the SQS source connector using one of the following methods:
 
-- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar).
+- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar).
 
 - Build it from the source code.
 
@@ -50,7 +27,7 @@ You can get the SQS source connector using one of the following methods:
 
      ```bash
      ls target
-     pulsar-io-sqs-2.7.0.nar
+     pulsar-io-sqs-{{connector:version}}.nar
      ```
 
 # How to configure 
@@ -78,7 +55,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
         "namespace": "default",
         "name": "sqs-source",
         "topicName": "test-queue-pulsar",
-        "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
+        "archive": "connectors/pulsar-io-sqs-{{connector:version}}.nar",
         "parallelism": 1,
         "configs":
         {
@@ -98,7 +75,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
    namespace: "default"
    name: "sqs-source"
    topicName: "test-queue-pulsar"
-   archive: "connectors/pulsar-io-sqs-2.7.0.nar"
+   archive: "connectors/pulsar-io-sqs-{{connector:version}}.nar"
    parallelism: 1
 
    configs:
@@ -121,7 +98,7 @@ This example shows how to create an SQS source connector on a Pulsar cluster usi
 
 ```
 PULSAR_HOME/bin/pulsar-admin sources create \
---archive pulsar-io-sqs-2.7.0.nar \
+--archive pulsar-io-sqs-{{connector:version}}.nar \
 --source-config-file sqs-source-config.yaml \
 --classname org.apache.pulsar.ecosystem.io.sqs.SQSSource \
 --name sqs-source
@@ -142,7 +119,7 @@ This example describes how to use the SQS source connector to feed data from SQS
 2. Copy the NAR package to the Pulsar connectors directory.
  
     ```
-    cp pulsar-io-sqs-2.7.0.nar PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 3. Start Pulsar in standalone mode.
@@ -177,7 +154,7 @@ This example explains how to create an SQS source connector in an on-premises cl
 1. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar $PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar $PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Reload all [built-in connectors](https://pulsar.apache.org/docs/en/next/io-connectors/).
@@ -205,11 +182,11 @@ This example explains how to create an SQS source connector in an on-premises cl
 
 This example demonstrates how to create an SQS source connector on a K8S cluster.
 
-1. Build a new image based on the Pulsar image with the SQS source connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:2.7.0`.
+1. Build a new image based on the Pulsar image with the SQS source connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:{{connector:version}}`.
 
     ```Dockerfile
-    FROM apachepulsar/pulsar-all:2.7.0
-    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar -o /pulsar/connectors/pulsar-io-sqs-2.7.0.nar
+    FROM apachepulsar/pulsar-all:{{connector:version}}
+    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar -o /pulsar/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Extract the previous `--set` arguments from K8S to the `pulsar.yaml` file.
@@ -218,7 +195,7 @@ This example demonstrates how to create an SQS source connector on a K8S cluster
     helm get values <release-name> > pulsar.yaml
     ```
 
-3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:2.7.0`.
+3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:{{connector:version}}`.
 
 4. Upgrade the K8S cluster with the `pulsar.yaml` file.
 
