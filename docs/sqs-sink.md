@@ -1,26 +1,3 @@
----
-description: The SQS sink connector pulls data from Pulsar topics and persists data to AWS SQS.
-author: ["StreamNative"]
-contributors: ["StreamNative"]
-language: Java
-document: 
-source: "https://github.com/streamnative/pulsar-io-sqs/tree/branch-2.7.0/src/main/java/org/apache/pulsar/ecosystem/io/sqs"
-license: Apache License 2.0
-tags: ["Pulsar IO", "SQS", "Sink"]
-alias: SQS Sink
-features: ["Use SQS sink connector to sync data from Pulsar"]
-license_link: "https://www.apache.org/licenses/LICENSE-2.0"
-icon: "/images/connectors/sqs-logo.png"
-download: "https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar"
-support: StreamNative
-support_link: https://streamnative.io
-support_img: "/images/connectors/streamnative.png"
-dockerfile: 
-owner_name: "StreamNative"
-owner_img: "/images/streamnative.png" 
-id: "sqs-sink"
----
-
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sink connector pulls data from Pulsar topics and persists data to AWS SQS.
 
 ![](/docs/sqs-sink.png)
@@ -29,7 +6,7 @@ The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sink 
 
 You can get the SQS sink connector using one of the following methods:
 
-- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar).
+- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar).
 
 - Build it from the source code.
 
@@ -49,7 +26,7 @@ You can get the SQS sink connector using one of the following methods:
 
      ```bash
      ls target
-     pulsar-io-sqs-2.7.0.nar
+     pulsar-io-sqs-{{connector:version}}.nar
      ```
 
 # How to configure 
@@ -78,7 +55,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
         "inputs": [
           "test-queue-pulsar"
         ],
-        "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
+        "archive": "connectors/pulsar-io-sqs-{{connector:version}}.nar",
         "parallelism": 1,
         "configs":
         {
@@ -99,7 +76,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
    name: "sqs-sink"
    inputs: 
       - "test-queue-pulsar"
-   archive: "connectors/pulsar-io-sqs-2.7.0.nar"
+   archive: "connectors/pulsar-io-sqs-{{connector:version}}.nar"
    parallelism: 1
 
    configs:
@@ -122,7 +99,7 @@ This example shows how to create an SQS sink connector on a Pulsar cluster using
 
 ```
 PULSAR_HOME/bin/pulsar-admin sinks create \
---archive pulsar-io-sqs-2.7.0.nar \
+--archive pulsar-io-sqs-{{connector:version}}.nar \
 --sink-config-file sqs-sink-config.yaml \
 --classname org.apache.pulsar.ecosystem.io.sqs.SQSSink \
 --name sqs-sink
@@ -144,7 +121,7 @@ This example describes how to use the SQS sink connector to pull data from Pulsa
 2. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 3. Start Pulsar in standalone mode.
@@ -182,7 +159,7 @@ This example explains how to create an SQS sink connector in an on-premises clus
 1. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar $PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar $PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Reload all [built-in connectors](https://pulsar.apache.org/docs/en/next/io-connectors/).
@@ -208,11 +185,11 @@ This example explains how to create an SQS sink connector in an on-premises clus
 
 ### K8S cluster
 
-1. Build a new image based on the Pulsar image with the SQS sink connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:2.7.0`.
+1. Build a new image based on the Pulsar image with the SQS sink connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:{{connector:version}}`.
 
     ```Dockerfile
-    FROM apachepulsar/pulsar-all:2.7.0
-    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar -o /pulsar/connectors/pulsar-io-sqs-2.7.0.nar
+    FROM apachepulsar/pulsar-all:{{connector:version}}
+    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar -o /pulsar/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Extract the previous `--set` arguments from K8S to the file `pulsar.yaml`.
@@ -221,7 +198,7 @@ This example explains how to create an SQS sink connector in an on-premises clus
     helm get values <release-name> > pulsar.yaml
     ```
 
-3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:2.7.0`.
+3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:{{connector:version}}`.
 
 4. Upgrade the K8S cluster with the `pulsar.yaml`  file.
 
