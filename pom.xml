@@ -78,7 +78,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.pulsar</groupId>
+        <groupId>io.streamnative</groupId>
         <artifactId>pulsar-io-core</artifactId>
         <version>${pulsar.version}</version>
       </dependency>
@@ -98,7 +98,7 @@
         <version>${spotbugs-annotations.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.pulsar</groupId>
+        <groupId>io.streamnative</groupId>
         <artifactId>pulsar-io-aws</artifactId>
         <version>${pulsar.version}</version>
       </dependency>
@@ -136,7 +136,7 @@
         <version>${testcontainers.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.pulsar</groupId>
+        <groupId>io.streamnative</groupId>
         <artifactId>pulsar-client</artifactId>
         <version>${pulsar.version}</version>
       </dependency>
@@ -160,12 +160,12 @@
 
     <!-- runtime dependencies -->
     <dependency>
-      <groupId>org.apache.pulsar</groupId>
+      <groupId>io.streamnative</groupId>
       <artifactId>pulsar-io-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.pulsar</groupId>
+      <groupId>io.streamnative</groupId>
       <artifactId>pulsar-io-aws</artifactId>
     </dependency>
 
@@ -206,7 +206,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.pulsar</groupId>
+      <groupId>io.streamnative</groupId>
       <artifactId>pulsar-client</artifactId>
       <scope>test</scope>
     </dependency>
