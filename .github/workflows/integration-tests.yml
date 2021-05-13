@@ -23,10 +23,13 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: test
-        run: |
-          ./.ci/integrations/start.sh
-          mvn clean package -DskipTests
-          mvn -Dtest=*IntegrationTest test -DfailIfNoTests=false
-
-      - name: cleanup
-        run: ./.ci/integrations/stop.sh
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          retry_on: error
+          command: |
+            ./.ci/integrations/start.sh
+            mvn clean package -DskipTests
+            mvn -Dtest=*IntegrationTest test -DfailIfNoTests=false
+            ./.ci/integrations/stop.sh
