@@ -1,35 +1,14 @@
----
-description: The SQS sink connector pulls data from Pulsar topics and persists data to AWS SQS.
-author: ["StreamNative"]
-contributors: ["StreamNative"]
-language: Java
-document: 
-source: "https://github.com/streamnative/pulsar-io-sqs/tree/branch-2.7.0/src/main/java/org/apache/pulsar/ecosystem/io/sqs"
-license: Apache License 2.0
-tags: ["Pulsar IO", "SQS", "Sink"]
-alias: SQS Sink
-features: ["Use SQS sink connector to sync data from Pulsar"]
-license_link: "https://www.apache.org/licenses/LICENSE-2.0"
-icon: "/images/connectors/sqs-logo.png"
-download: "https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar"
-support: StreamNative
-support_link: https://streamnative.io
-support_img: "/images/connectors/streamnative.png"
-dockerfile: 
-owner_name: "StreamNative"
-owner_img: "/images/streamnative.png" 
-id: "sqs-sink"
----
-
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sink connector pulls data from Pulsar topics and persists data to AWS SQS.
 
 ![](/docs/sqs-sink.png)
 
 # How to get 
 
-You can get the SQS sink connector using one of the following methods:
+You can get the SQS sink connector using one of the following methods.
 
-- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar).
+## Use it with Function Worker
+
+- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar).
 
 - Build it from the source code.
 
@@ -49,12 +28,16 @@ You can get the SQS sink connector using one of the following methods:
 
      ```bash
      ls target
-     pulsar-io-sqs-2.7.0.nar
+     pulsar-io-sqs-{{connector:version}}.nar
      ```
+
+## Use it with Function Mesh
+
+Pull the SQS connector Docker image from [here](https://hub.docker.com/r/streamnative/pulsar-io-sqs).
 
 # How to configure 
 
-Before using the SQS sink connector, you need to configure it.
+Before using the SQS sink connector, you need to configure it. Below are the properties and their descriptions.
 
 You can create a configuration file (JSON or YAML) to set the following properties.
 
@@ -65,6 +48,10 @@ You can create a configuration file (JSON or YAML) to set the following properti
 | `awsCredentialPluginName` | String|false | " " (empty string) | Fully-qualified class name of implementation of `AwsCredentialProviderPlugin`. |
 | `awsCredentialPluginParam` | String|true | " " (empty string) | JSON parameter to initialize `AwsCredentialsProviderPlugin`. |
 | `queueName` | String|true | " " (empty string) | Name of the SQS queue that messages should be read from or written to. |
+
+## Configure it with Function Worker
+
+You can create a configuration file (JSON or YAML) to set the properties as below.
 
 **Example**
 
@@ -78,7 +65,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
         "inputs": [
           "test-queue-pulsar"
         ],
-        "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
+        "archive": "connectors/pulsar-io-sqs-{{connector:version}}.nar",
         "parallelism": 1,
         "configs":
         {
@@ -99,7 +86,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
    name: "sqs-sink"
    inputs: 
       - "test-queue-pulsar"
-   archive: "connectors/pulsar-io-sqs-2.7.0.nar"
+   archive: "connectors/pulsar-io-sqs-{{connector:version}}.nar"
    parallelism: 1
 
    configs:
@@ -110,11 +97,56 @@ You can create a configuration file (JSON or YAML) to set the following properti
       awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
     ```
 
+## Configure it with Function Mesh
+
+You can submit a [CustomResourceDefinitions (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) to create an SQS sink connector. Using CRD makes Function Mesh naturally integrate with the Kubernetes ecosystem. For more information about Pulsar sink CRD configurations, see [here](https://functionmesh.io/docs/connectors/io-crd-config/sink-crd-config).
+
+You can define a CRD file (YAML) to set the properties as below.
+
+```yaml
+apiVersion: compute.functionmesh.io/v1alpha1
+kind: Sink
+metadata:
+  name: sqs-sink-sample
+spec:
+  image: streamnative/pulsar-io-sqs:{{connector:version}}
+  className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
+  replicas: 1
+  maxReplicas: 1
+  input:
+    topics: 
+    - persistent://public/default/destination
+    typeClassName: “[B”
+  sinkConfig:
+    awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+    awsRegion: "us-west-2"
+    queueName: "test-queue"
+    awsCredentialPluginName: ""
+    awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
+  pulsar:
+    pulsarConfig: "test-pulsar-sink-config"
+  resources:
+    limits:
+    cpu: "0.2"
+    memory: 1.1G
+    requests:
+    cpu: "0.1"
+    memory: 1G
+  java:
+    jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
+  clusterName: test-pulsar
+  autoAck: true
+```
+
 # How to use
 
-You can use the SQS sink connector as a non built-in connector or a built-in connector as below. 
+You can use the SQS sink connector with Function Worker or Function Mesh.
 
-## Use as non built-in connector 
+## Use it with Function Worker
+
+You can use the SQS sink connector as a non built-in connector or a built-in connector.
+
+### Use it as non built-in connector
 
 If you already have a Pulsar cluster, you can use the SQS sink connector as a non built-in connector directly.
 
@@ -122,20 +154,19 @@ This example shows how to create an SQS sink connector on a Pulsar cluster using
 
 ```
 PULSAR_HOME/bin/pulsar-admin sinks create \
---archive pulsar-io-sqs-2.7.0.nar \
+--archive pulsar-io-sqs-{{connector:version}}.nar \
 --sink-config-file sqs-sink-config.yaml \
 --classname org.apache.pulsar.ecosystem.io.sqs.SQSSink \
 --name sqs-sink
 ```
 
-## Use as built-in connector
+### Use it as built-in connector
 
-You can make the SQS sink connector as a built-in connector and use it on a standalone cluster, on-premises cluster, or K8S cluster.
+You can make the SQS sink connector as a built-in connector and use it on a standalone cluster or on-premises cluster.
 
 ### Standalone cluster
 
 This example describes how to use the SQS sink connector to pull data from Pulsar topics and persist data to SQS in standalone mode.
-
 
 1. Prepare SQS service. 
  
@@ -144,7 +175,7 @@ This example describes how to use the SQS sink connector to pull data from Pulsa
 2. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 3. Start Pulsar in standalone mode.
@@ -175,14 +206,14 @@ This example describes how to use the SQS sink connector to pull data from Pulsa
 
     Now you can see the messages containing "Hello From Pulsar" from AWS SQS CLI.
 
-### On-premises cluster
+#### On-premises cluster
 
 This example explains how to create an SQS sink connector in an on-premises cluster.
 
 1. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar $PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar $PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Reload all [built-in connectors](https://pulsar.apache.org/docs/en/next/io-connectors/).
@@ -206,41 +237,91 @@ This example explains how to create an SQS sink connector in an on-premises clus
     --name sqs-sink
     ```
 
-### K8S cluster
+## Use it with Function Mesh
 
-1. Build a new image based on the Pulsar image with the SQS sink connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:2.7.0`.
+This example demonstrates how to create an SQS sink connector on Function Mesh.
 
-    ```Dockerfile
-    FROM apachepulsar/pulsar-all:2.7.0
-    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar -o /pulsar/connectors/pulsar-io-sqs-2.7.0.nar
+### Prerequisites
+
+- Create and connect to a [Kubernetes cluster](https://kubernetes.io/).
+
+- Create a [Pulsar cluster](https://pulsar.apache.org/docs/en/kubernetes-helm/) in the Kubernetes cluster.
+
+- [Install the Function Mesh Operator and CRD](https://functionmesh.io/docs/install-function-mesh/) into the Kubernetes cluster.
+
+- Prepare SQS service. 
+
+  For more information, see [Getting Started with Amazon SQS](https://aws.amazon.com/sqs/getting-started/).
+
+### Step
+
+1. Define the SQS sink connector with a YAML file and save it as `source-sample.yaml`.
+
+    This example shows how to publish the SQS sink connector to Function Mesh with a Docker image.
+
+    ```yaml
+    apiVersion: compute.functionmesh.io/v1alpha1
+    kind: Sink
+    metadata:
+    name: sqs-sink-sample
+    spec:
+    image: streamnative/pulsar-io-sqs:{{connector:version}}
+    className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
+    replicas: 1
+    maxReplicas: 1
+    input:
+        topics: 
+        - persistent://public/default/destination
+        typeClassName: “[B”
+    sinkConfig:
+        awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+        awsRegion: "us-west-2"
+        queueName: "test-queue"
+        awsCredentialPluginName: ""
+        awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
+    pulsar:
+        pulsarConfig: "test-pulsar-sink-config"
+    resources:
+        limits:
+        cpu: "0.2"
+        memory: 1.1G
+        requests:
+        cpu: "0.1"
+        memory: 1G
+    java:
+        jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
+    clusterName: test-pulsar
+    autoAck: true
     ```
 
-2. Extract the previous `--set` arguments from K8S to the file `pulsar.yaml`.
+
+1. Apply the YAML file to create the SQS sink connector.
+
+    **Input**
 
     ```
-    helm get values <release-name> > pulsar.yaml
+    kubectl apply -f  <path-to-sink-sample.yaml>
     ```
 
-3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:2.7.0`.
-
-4. Upgrade the K8S cluster with the `pulsar.yaml`  file.
+    **Output**
 
     ```
-    helm upgrade <release-name> streamnative/pulsar \
-        --version <new version> \
-        -f pulsar.yaml
+    sink.compute.functionmesh.io/sqs-sink-sample created
     ```
 
-    > **Tip**
-    >
-    > For more information about how to upgrade a Pulsar cluster with Helm, see [Upgrade Guide](https://docs.streamnative.io/platform/latest/install-and-upgrade/helm/install/upgrade).
+2. Check whether the SQS sink connector is created successfully.
 
-
-5. Create an SQS sink connector on a Pulsar cluster using the [`pulsar-admin sinks create`](http://pulsar.apache.org/tools/pulsar-admin/2.8.0-SNAPSHOT/#-em-create-em--24) command.
+    **Input**
 
     ```
-    PULSAR_HOME/bin/pulsar-admin sinks create \
-    --sink-type sqs \
-    --sink-config-file sqs-sink-config.yaml \
-    --name sqs-sink
+    kubectl get all
     ```
+
+    **Output**
+
+    ```
+    NAME                                READY   STATUS      RESTARTS   AGE
+    pod/sqs-sink-sample-0               1/1     Running     0          77s
+    ```
+
+    After that, you can produce and consume messages using the SQS sink connector between Pulsar and SQS.
