@@ -239,7 +239,7 @@ This example explains how to create an SQS sink connector in an on-premises clus
 
 ## Use it with Function Mesh
 
-This example demonstrates how to create an SQS sink connector on Function Mesh.
+This example demonstrates how to create an SQS sink connector through Function Mesh.
 
 ### Prerequisites
 
@@ -255,7 +255,7 @@ This example demonstrates how to create an SQS sink connector on Function Mesh.
 
 ### Step
 
-1. Define the SQS sink connector with a YAML file and save it as `source-sample.yaml`.
+1. Define the SQS sink connector with a YAML file and save it as `sink-sample.yaml`.
 
     This example shows how to publish the SQS sink connector to Function Mesh with a Docker image.
 

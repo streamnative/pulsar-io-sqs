@@ -232,7 +232,7 @@ This example explains how to create an SQS source connector in an on-premises cl
 
 ## Use it with Function Mesh
 
-This example demonstrates how to create an SQS source connector on Function Mesh.
+This example demonstrates how to create an SQS source connector through Function Mesh.
 
 ### Prerequisites
 
