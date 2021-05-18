@@ -1,40 +1,18 @@
----
-description: The SQS source connector feeds data from AWS SQS and writes data to Pulsar topics.
-author: ["StreamNative"]
-contributors: ["StreamNative"]
-language: Java
-document: 
-source: "https://github.com/streamnative/pulsar-io-sqs/tree/branch-2.7.0/src/main/java/org/apache/pulsar/ecosystem/io/sqs"
-license: Apache License 2.0
-tags: ["Pulsar IO", "SQS", "Source"]
-alias: SQS Source
-features: ["Use SQS source connector to sync data to Pulsar"]
-license_link: "https://www.apache.org/licenses/LICENSE-2.0"
-icon: "/images/connectors/sqs-logo.png"
-download: "https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar"
-support: StreamNative
-support_link: https://streamnative.io
-support_img: "/images/connectors/streamnative.png"
-dockerfile: 
-owner_name: "StreamNative"
-owner_img: "/images/streamnative.png" 
-id: "sqs-source"
----
-
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) source connector feeds data from Amazon AWS SQS and writes data to Pulsar topics.
 
 ![](/docs/sqs-source.png)
 
 # How to get 
 
-You can get the SQS source connector using one of the following methods:
+You can get the SQS source connector using one of the following methods.
 
-- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar).
+## Use it with Function Worker
+
+- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar).
 
 - Build it from the source code.
 
   1. Clone the source code to your machine.
-
 
      ```bash
      git clone https://github.com/streamnative/pulsar-io-sqs
@@ -50,14 +28,16 @@ You can get the SQS source connector using one of the following methods:
 
      ```bash
      ls target
-     pulsar-io-sqs-2.7.0.nar
+     pulsar-io-sqs-{{connector:version}}.nar
      ```
+
+## Use it with Function Mesh
+
+Pull the SQS connector Docker image from [here](https://hub.docker.com/r/streamnative/pulsar-io-sqs).
 
 # How to configure 
 
-Before using the SQS source connector, you need to configure it.
-
-You can create a configuration file (JSON or YAML) to set the following properties.
+Before using the SQS source connector, you need to configure it. Below are the properties and their descriptions.
 
 | Name | Type|Required | Default | Description
 |------|----------|----------|---------|-------------|
@@ -67,6 +47,9 @@ You can create a configuration file (JSON or YAML) to set the following properti
 | `awsCredentialPluginParam` | String|true | " " (empty string) | JSON parameter to initialize `AwsCredentialsProviderPlugin`. |
 | `queueName` | String|true | " " (empty string) | Name of the SQS queue that messages should be read from or written to. |
 
+## Configure it with Function Worker
+
+You can create a configuration file (JSON or YAML) to set the properties as below.
 
 **Example**
 
@@ -78,7 +61,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
         "namespace": "default",
         "name": "sqs-source",
         "topicName": "test-queue-pulsar",
-        "archive": "connectors/pulsar-io-sqs-2.7.0.nar",
+        "archive": "connectors/pulsar-io-sqs-{{connector:version}}.nar",
         "parallelism": 1,
         "configs":
         {
@@ -98,7 +81,7 @@ You can create a configuration file (JSON or YAML) to set the following properti
    namespace: "default"
    name: "sqs-source"
    topicName: "test-queue-pulsar"
-   archive: "connectors/pulsar-io-sqs-2.7.0.nar"
+   archive: "connectors/pulsar-io-sqs-{{connector:version}}.nar"
    parallelism: 1
 
    configs:
@@ -109,11 +92,54 @@ You can create a configuration file (JSON or YAML) to set the following properti
       awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
     ```
 
+## Configure it with Function Mesh
+
+You can submit a [CustomResourceDefinitions (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) to create an SQS source connector. Using CRD makes Function Mesh naturally integrate with the Kubernetes ecosystem. For more information about Pulsar source CRD configurations, see [here](https://functionmesh.io/docs/connectors/io-crd-config/source-crd-config).
+
+You can define a CRD file (YAML) to set the properties as below.
+
+```yaml
+apiVersion: compute.functionmesh.io/v1alpha1
+kind: Source
+metadata:
+  name: sqs-source-sample
+spec:
+  image: streamnative/pulsar-io-sqs:{{connector:version}}
+  className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
+  replicas: 1
+  maxReplicas: 1
+  output:
+    topic: persistent://public/default/destination
+    typeClassName: “[B”
+  sourceConfig:
+    awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+    awsRegion: "us-west-2"
+    queueName: "test-queue"
+    awsCredentialPluginName: ""
+    awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
+  pulsar:
+    pulsarConfig: "test-pulsar-source-config"
+  resources:
+    limits:
+    cpu: "0.2"
+    memory: 1.1G
+    requests:
+    cpu: "0.1"
+    memory: 1G
+  java:
+    jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
+  clusterName: test-pulsar
+```
+
 # How to use
 
-You can use the SQS source connector as a non built-in connector or a built-in connector as below. 
+You can use the SQS source connector with Function Worker or Function Mesh.
 
-## Use as non built-in connector 
+## Use it with Function Worker
+
+You can use the SQS source connector as a non built-in connector or a built-in connector.
+
+### Use it as non built-in connector
 
 If you already have a Pulsar cluster, you can use the SQS source connector as a non built-in connector directly.
 
@@ -121,19 +147,19 @@ This example shows how to create an SQS source connector on a Pulsar cluster usi
 
 ```
 PULSAR_HOME/bin/pulsar-admin sources create \
---archive pulsar-io-sqs-2.7.0.nar \
+--archive pulsar-io-sqs-{{connector:version}}.nar \
 --source-config-file sqs-source-config.yaml \
 --classname org.apache.pulsar.ecosystem.io.sqs.SQSSource \
 --name sqs-source
 ```
 
-## Use as built-in connector
+### Use it as built-in connector
 
-You can make the SQS source connector as a built-in connector and use it on a standalone cluster, on-premises cluster, or K8S cluster.
+You can make the SQS source connector as a built-in connector and use it on a standalone cluster or on-premises cluster.
 
-### Standalone cluster
+#### Standalone cluster
 
-This example describes how to use the SQS source connector to feed data from SQS and write data to Pulsar topics in the standalone mode.
+This example describes how to use the SQS source connector to feed data from SQS and write data to Pulsar topics in standalone mode.
 
 1. Prepare SQS service. 
  
@@ -142,7 +168,7 @@ This example describes how to use the SQS source connector to feed data from SQS
 2. Copy the NAR package to the Pulsar connectors directory.
  
     ```
-    cp pulsar-io-sqs-2.7.0.nar PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 3. Start Pulsar in standalone mode.
@@ -154,7 +180,9 @@ This example describes how to use the SQS source connector to feed data from SQS
 4. Run the SQS source connector locally.
 
     ```
-    PULSAR_HOME/bin/pulsar-admin sources localrun --source-type sqs  --source-config-file sqs-source-config.yaml
+    PULSAR_HOME/bin/pulsar-admin sources localrun \
+    --source-type sqs  \
+    --source-config-file sqs-source-config.yaml
     ```
 
 5. Consume the message from the Pulsar topic.
@@ -162,6 +190,7 @@ This example describes how to use the SQS source connector to feed data from SQS
     ```
     PULSAR_HOME/bin/pulsar-client consume -s "sub-products" public/default/test-queue-pulsar -n 0
     ```
+
 6. Send a message to the SQS queue using the [AWS SQS CLI tool](https://aws.amazon.com/cli/).
 
     ```
@@ -170,14 +199,14 @@ This example describes how to use the SQS source connector to feed data from SQS
 
     Now you can see the message "Hello From SQS" from the Pulsar consumer.
 
-### On-premises cluster
+#### On-premises cluster
 
 This example explains how to create an SQS source connector in an on-premises cluster.
 
 1. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.7.0.nar $PULSAR_HOME/connectors/pulsar-io-sqs-2.7.0.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar $PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Reload all [built-in connectors](https://pulsar.apache.org/docs/en/next/io-connectors/).
@@ -195,48 +224,94 @@ This example explains how to create an SQS source connector in an on-premises cl
 4. Create an SQS source connector on a Pulsar cluster using the [`pulsar-admin sources create`](http://pulsar.apache.org/tools/pulsar-admin/2.8.0-SNAPSHOT/#-em-create-em--14) command.
 
     ```
-    $PULSAR_HOME/bin/pulsar-admin sources create \
+    PULSAR_HOME/bin/pulsar-admin sources create \
     --source-type sqs \
     --source-config-file sqs-source-config.yaml \
     --name sqs-source
     ```
 
-### K8S cluster
+## Use it with Function Mesh
 
-This example demonstrates how to create an SQS source connector on a K8S cluster.
+This example demonstrates how to create an SQS source connector through Function Mesh.
 
-1. Build a new image based on the Pulsar image with the SQS source connector and push the new image to your image registry. This example tags the new image as `streamnative/pulsar-sqs:2.7.0`.
+### Prerequisites
 
-    ```Dockerfile
-    FROM apachepulsar/pulsar-all:2.7.0
-    RUN curl https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.7.0/pulsar-io-sqs-2.7.0.nar -o /pulsar/connectors/pulsar-io-sqs-2.7.0.nar
+- Create and connect to a [Kubernetes cluster](https://kubernetes.io/).
+
+- Create a [Pulsar cluster](https://pulsar.apache.org/docs/en/kubernetes-helm/) in the Kubernetes cluster.
+
+- [Install the Function Mesh Operator and CRD](https://functionmesh.io/docs/install-function-mesh/) into the Kubernetes cluster.
+
+- Prepare SQS service. 
+
+  For more information, see [Getting Started with Amazon SQS](https://aws.amazon.com/sqs/getting-started/).
+
+### Step
+
+1. Define the SQS source connector with a YAML file and save it as `source-sample.yaml`.
+
+    This example shows how to publish the SQS source connector to Function Mesh with a Docker image.
+
+    ```yaml
+    apiVersion: compute.functionmesh.io/v1alpha1
+    kind: Source
+    metadata:
+    name: sqs-source-sample
+    spec:
+    image: streamnative/pulsar-io-sqs:{{connector:version}}
+    className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
+    replicas: 1
+    maxReplicas: 1
+    output:
+        topic: persistent://public/default/destination
+        typeClassName: “[B”
+    sourceConfig:
+        awsEndpoint: "https://sqs.us-west-2.amazonaws.com"
+        awsRegion: "us-west-2"
+        queueName: "test-queue"
+        awsCredentialPluginName: ""
+        awsCredentialPluginParam: '{"accessKey":"myKey","secretKey":"my-Secret"}'
+    pulsar:
+        pulsarConfig: "test-pulsar-source-config"
+    resources:
+        limits:
+        cpu: "0.2"
+        memory: 1.1G
+        requests:
+        cpu: "0.1"
+        memory: 1G
+    java:
+        jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
+    clusterName: test-pulsar
     ```
 
-2. Extract the previous `--set` arguments from K8S to the `pulsar.yaml` file.
+2. Apply the YAML file to create the SQS source connector.
+
+    **Input**
 
     ```
-    helm get values <release-name> > pulsar.yaml
+    kubectl apply -f  <path-to-source-sample.yaml>
     ```
 
-3. Replace the `images` section in the `pulsar.yaml` file with the `images` section of `streamnative/pulsar-sqs:2.7.0`.
-
-4. Upgrade the K8S cluster with the `pulsar.yaml` file.
+    **Output**
 
     ```
-    helm upgrade <release-name> streamnative/pulsar \
-        --version <new version> \
-        -f pulsar.yaml
+    source.compute.functionmesh.io/sqs-source-sample created
     ```
 
-    > **Tip**
-    >
-    > For more information about how to upgrade a Pulsar cluster with Helm, see [Upgrade Guide](https://docs.streamnative.io/platform/latest/install-and-upgrade/helm/install/upgrade).
+3. Check whether the SQS source connector is created successfully.
 
-5. Create an SQS source connector on a Pulsar cluster using the [`pulsar-admin sources create`](http://pulsar.apache.org/tools/pulsar-admin/2.8.0-SNAPSHOT/#-em-create-em--14) command.
+    **Input**
 
     ```
-    PULSAR_HOME/bin/pulsar-admin sources create \
-    --source-type sqs 
-    --source-config-file sqs-source-config.yaml 
-    --name sqs-source
+    kubectl get all
     ```
+
+    **Output**
+
+    ```
+    NAME                                READY   STATUS      RESTARTS   AGE
+    pod/sqs-source-sample-0               1/1     Running     0          77s
+    ```
+
+    After that, you can produce and consume messages using the SQS source connector between Pulsar and SQS.
