@@ -41,7 +41,10 @@ public abstract class SQSAbstractConnector extends AbstractAwsConnector {
     private String queueUrl;
 
     public void prepareSqsClient() throws Exception {
-        if (config == null || client != null) {
+        if (config == null) {
+            throw new IllegalStateException("Configuration not set");
+        }
+        if (client != null) {
             throw new IllegalStateException("Connector is already open");
         }
 
