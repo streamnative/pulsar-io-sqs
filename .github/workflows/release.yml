@@ -14,7 +14,10 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: build
+      - name: Login streamnative docker hub
+        run: docker login -u="${{ secrets.DOCKER_USER }}" -p="${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: build connector
         run: |
           version=`./scripts/get-project-version/get-project-version.py`
           mvn clean install -DskipTests
@@ -23,9 +26,17 @@ jobs:
           cp README.md ./pulsar-io-sqs-readme.md
           echo "ls pulsar-*"
           ls pulsar-*
-      - name: publish
+      - name: publish release
         uses: skx/github-action-publish-binaries@release-0.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: 'pulsar-*'
+
+      - name: build and push docker image
+        run: |
+          PULSAR_VERSION=`./scripts/get-project-version/get-project-version.py`
+          REPO=`mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec 2>/dev/null`
+          IMAGE_REPO=streamnative/${REPO}
+          docker build --build-arg PULSAR_VERSION="$PULSAR_VERSION" -t ${IMAGE_REPO}:${PULSAR_VERSION} -f ./image/Dockerfile ./
+          docker push ${IMAGE_REPO}:${PULSAR_VERSION}
