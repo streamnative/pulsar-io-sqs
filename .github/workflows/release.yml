@@ -2,6 +2,7 @@ name: sqs Release
 
 on:
   release:
+    types: [published]
 
 jobs:
   upload:
