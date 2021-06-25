@@ -44,9 +44,15 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
       - name: build and push docker image
-        run: |
-          PULSAR_VERSION=`./scripts/get-project-version/get-project-version.py`
-          REPO=`mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec 2>/dev/null`
-          IMAGE_REPO=streamnative/${REPO}
-          docker build --build-arg PULSAR_VERSION="$PULSAR_VERSION" -t ${IMAGE_REPO}:${PULSAR_VERSION} -f ./image/Dockerfile ./
-          docker push ${IMAGE_REPO}:${PULSAR_VERSION}
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 99
+          retry_wait_seconds: 60
+          command: |
+            PULSAR_VERSION=`./scripts/get-project-version/get-project-version.py`
+            REPO=`mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec 2>/dev/null`
+            IMAGE_REPO=streamnative/${REPO}
+            RUNNER_IMAGE=streamnative/pulsar-functions-java-runner:${PULSAR_VERSION}
+            docker pull ${RUNNER_IMAGE}
+            docker build --build-arg PULSAR_VERSION="$PULSAR_VERSION" -t ${IMAGE_REPO}:${PULSAR_VERSION} -f ./image/Dockerfile ./
+            docker push ${IMAGE_REPO}:${PULSAR_VERSION}
