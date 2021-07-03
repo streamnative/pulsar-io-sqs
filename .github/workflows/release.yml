@@ -22,11 +22,6 @@ jobs:
         run: |
           version=`./scripts/get-project-version/get-project-version.py`
           mvn clean install -DskipTests
-          rm -rf pulsar-*
-          cp ./target/pulsar-io-sqs-${version}.nar ./
-          cp README.md ./pulsar-io-sqs-readme.md
-          echo "ls pulsar-*"
-          ls pulsar-*
           echo "::set-output name=nar-file::pulsar-io-sqs-${version}.nar"
           echo "::set-output name=readme-file::pulsar-io-sqs-readme.md"
 
@@ -35,6 +30,7 @@ jobs:
         with:
           max_attempts: 99
           retry_wait_seconds: 60
+          timeout_minutes: 5
           command: |
             PULSAR_VERSION=`./scripts/get-project-version/get-project-version.py`
             REPO=`mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec 2>/dev/null`
