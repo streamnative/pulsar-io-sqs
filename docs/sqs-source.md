@@ -1,5 +1,6 @@
 ---
 dockerfile: "https://hub.docker.com/r/streamnative/pulsar-io-sqs"
+alias: AWS SQS Source Connector
 ---
 
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) source connector feeds data from Amazon AWS SQS and writes data to Pulsar topics.
