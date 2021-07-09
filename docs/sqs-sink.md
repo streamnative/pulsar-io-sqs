@@ -12,7 +12,7 @@ You can get the SQS sink connector using one of the following methods.
 
 ## Use it with Function Worker
 
-- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v2.8.0-rc-202106091215/pulsar-io-sqs-2.8.0-rc-202106091215.nar).
+- Download the NAR package from [here](https://github.com/streamnative/pulsar-io-sqs/releases/download/v{{connector:version}}/pulsar-io-sqs-{{connector:version}}.nar).
 
 - Build it from the source code.
 
@@ -32,7 +32,7 @@ You can get the SQS sink connector using one of the following methods.
 
      ```bash
      ls target
-     pulsar-io-sqs-2.8.0-rc-202106091215.nar
+     pulsar-io-sqs-{{connector:version}}.nar
      ```
 
 ## Use it with Function Mesh
@@ -69,7 +69,7 @@ You can create a configuration file (JSON or YAML) to set the properties as belo
         "inputs": [
           "test-queue-pulsar"
         ],
-        "archive": "connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar",
+        "archive": "connectors/pulsar-io-sqs-{{connector:version}}.nar",
         "parallelism": 1,
         "configs":
         {
@@ -90,7 +90,7 @@ You can create a configuration file (JSON or YAML) to set the properties as belo
    name: "sqs-sink"
    inputs: 
       - "test-queue-pulsar"
-   archive: "connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar"
+   archive: "connectors/pulsar-io-sqs-{{connector:version}}.nar"
    parallelism: 1
 
    configs:
@@ -113,7 +113,7 @@ kind: Sink
 metadata:
   name: sqs-sink-sample
 spec:
-  image: streamnative/pulsar-io-sqs:2.8.0-rc-202106091215
+  image: streamnative/pulsar-io-sqs:{{connector:version}}
   className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
   replicas: 1
   maxReplicas: 1
@@ -137,7 +137,7 @@ spec:
     cpu: "0.1"
     memory: 1G
   java:
-    jar: connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar
+    jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
   clusterName: test-pulsar
   autoAck: true
 ```
@@ -158,7 +158,7 @@ This example shows how to create an SQS sink connector on a Pulsar cluster using
 
 ```
 PULSAR_HOME/bin/pulsar-admin sinks create \
---archive pulsar-io-sqs-2.8.0-rc-202106091215.nar \
+--archive pulsar-io-sqs-{{connector:version}}.nar \
 --sink-config-file sqs-sink-config.yaml \
 --classname org.apache.pulsar.ecosystem.io.sqs.SQSSink \
 --name sqs-sink
@@ -179,7 +179,7 @@ This example describes how to use the SQS sink connector to pull data from Pulsa
 2. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.8.0-rc-202106091215.nar PULSAR_HOME/connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 3. Start Pulsar in standalone mode.
@@ -217,7 +217,7 @@ This example explains how to create an SQS sink connector in an on-premises clus
 1. Copy the NAR package of the SQS connector to the Pulsar connectors directory.
 
     ```
-    cp pulsar-io-sqs-2.8.0-rc-202106091215.nar $PULSAR_HOME/connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar
+    cp pulsar-io-sqs-{{connector:version}}.nar $PULSAR_HOME/connectors/pulsar-io-sqs-{{connector:version}}.nar
     ```
 
 2. Reload all [built-in connectors](https://pulsar.apache.org/docs/en/next/io-connectors/).
@@ -269,7 +269,7 @@ This example demonstrates how to create an SQS sink connector through Function M
     metadata:
     name: sqs-sink-sample
     spec:
-    image: streamnative/pulsar-io-sqs:2.8.0-rc-202106091215
+    image: streamnative/pulsar-io-sqs:{{connector:version}}
     className: org.apache.pulsar.ecosystem.io.sqs.SQSSource
     replicas: 1
     maxReplicas: 1
@@ -293,7 +293,7 @@ This example demonstrates how to create an SQS sink connector through Function M
         cpu: "0.1"
         memory: 1G
     java:
-        jar: connectors/pulsar-io-sqs-2.8.0-rc-202106091215.nar
+        jar: connectors/pulsar-io-sqs-{{connector:version}}.nar
     clusterName: test-pulsar
     autoAck: true
     ```
