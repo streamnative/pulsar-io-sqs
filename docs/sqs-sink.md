@@ -1,5 +1,6 @@
 ---
 dockerfile: "https://hub.docker.com/r/streamnative/pulsar-io-sqs"
+alias: AWS SQS Sink Connector
 ---
 
 The [AWS Simple Queue Service (SQS)](https://aws.amazon.com/sqs/?nc1=h_ls) sink connector pulls data from Pulsar topics and persists data to AWS SQS.
